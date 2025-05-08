@@ -1,0 +1,38 @@
+{
+  "cli": {
+    "version": ">= 16.3.3",
+    "appVersionSource": "remote",
+    "requireCommit": true
+  },
+  "build": {
+    "development": {
+      "environment": "development"
+    },
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      },
+      "environment": "preview"
+    },
+    "preview2": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
+    "preview3": {
+      "developmentClient": true
+    },
+    "preview4": {
+      "distribution": "internal"
+    },
+    "production": {
+      "environment": "production"
+    },
+    "my-profile": {
+      "environment": "production"
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
