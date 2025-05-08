@@ -26,6 +26,7 @@ export default function RootLayout() {
         <Stack.Screen name="DenominationBreakDown" options={{ headerShown: false }} />
         <Stack.Screen name="DeliveryPage" options={{ headerShown: false }} />
         <Stack.Screen name="Signature" options={{ headerShown: false }} />
+        <Stack.Screen name="SuccessScreen" options={{ headerShown: false }} />
         <Stack.Screen name="StartNavigation" options={{ headerShown: false }} />
         <Stack.Screen name="OTPVerificationScreen" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />

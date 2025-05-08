@@ -1,23 +1,17 @@
 // TransactionSummary.tsx
-import { Entypo } from '@expo/vector-icons';
+import { Entypo, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
 import React from 'react';
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Signature from 'react-native-signature-canvas';
-
-export default function TransactionSummary() {
+export default function SuccessScreen() {
     const router = useRouter();
-    const handleSignature = (signature: any) => {
-        console.log(signature);
-    };
-
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.statusSection}>
-                {/* <Ionicons name="alert-circle-outline" size={250} color="#f4a11f" /> */}
-                <Text style={styles.statusText}>You need to deliver cash to the allocated cash officer</Text>
+                <Ionicons name="checkmark-circle-outline" size={250} color="green" />
+                <Text style={styles.statusText}>Congratulations! You have successfully completed the transaction</Text>
             </View>
-
 
             <View style={styles.card}>
                 {/* Bank Info */}
@@ -34,7 +28,6 @@ export default function TransactionSummary() {
                         <Text style={styles.arrived}>Arrived (27 km)</Text>
                     </View>
                 </View>
-
                 {/* Address */}
                 <View style={styles.infoBlock}>
                     <Text style={styles.infoLabel}>Address:</Text>
@@ -59,20 +52,20 @@ export default function TransactionSummary() {
                     <Text style={styles.amount}>₦228,770,000,000</Text>
                 </View>
 
-                {/* Signature Box */}
-                <Text style={{marginTop: 30}}>Signature:</Text>
-                <View style={styles.signatureBox}>
-                    <Signature
-                        onOK={handleSignature}
-                        descriptionText="Signature"
-                        clearText="Clear"
-                        confirmText="Save"
-                        webStyle={signatureStyles}
-                    />
-                </View>
-            <TouchableOpacity style={[{ margin: 20 }, styles.signInButton]} onPress={() => router.push('/SuccessScreen')}>
-                <Text style={styles.signInButtonText}>CAPTURE</Text>
-                <Entypo name="arrow-right" size={15} color="#fff" style={{ marginLeft: 10, padding: 5, borderRadius: '50%', backgroundColor: '#0F3677' }} />
+            <TouchableOpacity
+                style={[{ margin: 20 }, styles.signInButton]}
+                onPress={async () => {
+                    await SecureStore.setItemAsync('isDone', 'true');
+                    router.push('/ScheduleScreen');
+                }}
+            >
+                <Text style={styles.signInButtonText}>DONE</Text>
+                <Entypo
+                    name="arrow-right"
+                    size={15}
+                    color="#fff"
+                    style={{ marginLeft: 10, padding: 5, borderRadius: '50%', backgroundColor: '#0F3677' }}
+                />
             </TouchableOpacity>
             </View>
 
@@ -223,7 +216,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     signInButtonText: {
-        width: '25%',
+        width: '15%',
         color: '#fff',
         // fontWeight: 'bold',
         fontSize: 16,

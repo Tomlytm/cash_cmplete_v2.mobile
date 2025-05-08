@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import * as SecureStore from 'expo-secure-store';
+import React, { useEffect, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -12,8 +13,25 @@ import {
   View
 } from 'react-native';
 
-const DATES = ['Mo\n24', 'Tu\n25', 'We\n26', 'Th\n27', 'Fr\n26'];
+const DATES = ['Mon\n05', 'Tue\n06', 'Wed\n07', 'Thur\n08'];
 const STATUS = ['Pending', 'Completed'];
+const completedData = [
+  {
+    title: 'Stanbic IBTC - Ikoyi',
+    code: 'BR. Code: 201-001',
+    phone: '0807-890-1234',
+    time: '10mins',
+    icon: require('../assets/images/bank-building.png'),
+  },
+  {
+    title: 'Union Bank - Marina',
+    code: 'BR. Code: 202-002',
+    phone: '0808-901-2345',
+    time: '15mins',
+    icon: require('../assets/images/bank-building.png'),
+  },
+];
+
 
 const scheduleData = [
   {
@@ -73,6 +91,22 @@ export default function ScheduleScreen() {
       useNativeDriver: false,
     }).start();
   };
+  useEffect(() => {
+    const fetchIsDone = async () => {
+      const isDone = await SecureStore.getItemAsync('isDone');
+      if (isDone === 'true') {
+        completedData.unshift({
+          title: 'AccessBank - Ajah',
+          code: 'BR. Code: 107-007',
+          phone: '0807-890-5678',
+          time: '12mins',
+          icon: require('../assets/images/bank-building.png'),
+        });
+      }
+    };
+
+    fetchIsDone();
+  }, []);
 
   const renderItem = ({ item }: any) => (
     <View style={styles.listItem}>
@@ -107,8 +141,8 @@ export default function ScheduleScreen() {
       {/* Date Tabs */}
       <View style={styles.dateContainer}>
         {DATES.map((day, i) => (
-          <TouchableOpacity key={i} style={[styles.dateItem, i === 1 && styles.activeDate]}>
-            <Text style={[styles.dateText, i === 1 && styles.activeDateText]}>
+          <TouchableOpacity key={i} style={[styles.dateItem, i === 3 && styles.activeDate]}>
+            <Text style={[styles.dateText, i === 3 && styles.activeDateText]}>
               {day}
             </Text>
           </TouchableOpacity>
@@ -140,15 +174,21 @@ export default function ScheduleScreen() {
 
       {/* List */}
       <FlatList
-        data={scheduleData}
+        data={activeTab === 'Pending' ? scheduleData : completedData}
         keyExtractor={(_, i) => i.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => router.push('/StartNavigation')}>
+            <TouchableOpacity
+            onPress={async () => {
+              await SecureStore.setItemAsync('isDone', 'false');
+              router.push('/StartNavigation');
+            }}
+            >
             {renderItem({ item })}
-          </TouchableOpacity>
+            </TouchableOpacity>
         )}
         contentContainerStyle={{ paddingBottom: 100 }}
       />
+
     </View>
   );
 }
@@ -171,7 +211,7 @@ const styles = StyleSheet.create({
   },
   dateContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginVertical: 20,
   },
   dateItem: {
